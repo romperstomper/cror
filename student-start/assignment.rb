@@ -85,10 +85,12 @@ class Solution
   #
   
   def update_racer(racer)
+    all({:_id => racer[:_id]}).replace_one(racer)
     #place solution here
   end
 
   def add_time(number, secs)
+    all({:number => number}).replace_one(:$inc => {:secs => secs})
     #place solution here
   end
 
