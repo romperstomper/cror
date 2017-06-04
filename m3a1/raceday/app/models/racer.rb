@@ -25,4 +25,8 @@ class Racer
     result = all({:_id => id}).map {|r| r}.pop
     return result.nil? ? nil : Racer.new(result)
   end
+  def save
+    result=self.class.collection.insert_one(self.instance_values)
+    @id=result.inserted_ids.first.to_s
+  end
 end
