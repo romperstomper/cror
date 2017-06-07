@@ -29,4 +29,18 @@ class Racer
     result=self.class.collection.insert_one(self.instance_values)
     @id=result.inserted_ids.first.to_s
   end
+  def update(params)
+    print "@id #{@id}\n #{self.class.collection.find(:_id => @id).first}\n"
+    @number=params[:number].to_i
+    @first_name=params[:first_name]
+    @last_name=params[:last_name]
+    @gender=params[:gender]
+    @group=params[:group]
+    @secs=params[:secs].to_i
+    params.slice!(:number, :first_name, :last_name, :gender, :group, :secs)
+    self.class.collection.find(:_id => BSON::ObjectId.from_string(@id)).replace_one(params)
+  end
+  def destroy
+    self.class.collection.find(:_id => BSON::ObjectId.from_string(@id)).delete_one
+  end
 end
