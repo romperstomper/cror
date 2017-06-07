@@ -1,5 +1,9 @@
 class Racer
+  include ActiveModel::Model
   attr_accessor :id, :number, :first_name, :last_name, :gender, :group, :secs
+  def persisted?
+    !@id.nil?
+  end
   def self.mongo_client
     #mdb = 'mongodb://localhost:27017'
     @@client = Mongoid::Clients.default
@@ -21,7 +25,7 @@ class Racer
     @secs=params[:secs].to_i
   end
   def self.find(id)
-    id = BSON::ObjectId(id) unless id.class == BSON::ObjectId
+    id = BSON::ObjectId.from_string(id) unless id.class == BSON::ObjectId
     result = all({:_id => id}).map {|r| r}.pop
     return result.nil? ? nil : Racer.new(result)
   end
