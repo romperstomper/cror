@@ -47,4 +47,23 @@ class Racer
   def destroy
     self.class.collection.find(:_id => BSON::ObjectId.from_string(@id)).delete_one
   end
+  def created_at
+  end
+  def updated_at
+  end
+  def self.paginate(params)
+    page = params[:page] ? params[:page].to_i : 1
+    limit = params[:per_page] ? params[:per_page].to_i : 30
+    skip = (page-1)*limit
+
+    racers = []
+    all(prototype={},sort={:number => 1},offset=skip,limit=limit).each do |x|
+      racers << Racer.new(x)
+    end
+    total = racers.length + 1
+
+    WillPaginate::Collection.create(page, limit, total) do |pager|
+      pager.replace(racers)
+    end
+  end
 end
